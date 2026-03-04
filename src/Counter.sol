@@ -11,4 +11,7 @@ contract Counter {
     function increment() public {
         number++;
     }
+    function updateVal(uint val) public{
+        number = val*10;
+    }
 }
