@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Test , console } from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {HelloWorld} from "../src/HelloWorld.sol";
-
-
 
 contract HelloWorldTest is Test {
     //create variable like cutome type of varible is helloworld contract
-    HelloWorld public  instance;
+    HelloWorld public instance;
 
     function setUp() public {
-        //create instace 
+        //create instace
         console.log("steup....!!");
         instance = new HelloWorld(); //create instace on contract
     }
@@ -19,26 +17,34 @@ contract HelloWorldTest is Test {
     function test_str() public view {
         console.log("test_str..");
 
-     assertEq(instance.str(), "hello world");
+        assertEq(instance.str(), "hello world");
     }
-
 
     function test_str2() public view {
-         console.log("test_str2..");
-     assertEq(instance.str(), "hello world");
+        console.log("test_str2..");
+        assertEq(instance.str(), "hello world");
     }
-
 
     function test_str3() public view {
-         console.log("test_str3..");
-     assertEq(instance.str(), "hello world");
+        console.log("test_str3..");
+        assertEq(instance.str(), "hello world");
+    }
+
+    function teststr4() public view {
+        console.log("test_str4..");
+        assertEq(instance.str(), "hello world");
     }
 
 
-     function teststr4() public view {
-         console.log("test_str4..");
-     assertEq(instance.str(), "hello world");
-    }
+ //note : testFail-prefixed tests are no longer supported. Replace them with explicit revert tests
+    // function testFail_div() public view{
+    //     // assertEq(instance.div(2, 2), 0);
+    //    assertEq(instance.str(), "hello world");
+    // }
 
-  
+    function test_div_fail() public {
+    vm.expectRevert();
+    assertEq(instance.str(), "hello world");
+}
+
 }
