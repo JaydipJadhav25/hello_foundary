@@ -14,6 +14,6 @@ contract RunScript is Test {
         // Execute the command and capture the output
         bytes memory blockNumber = vm.ffi(command);
         // console.logBytes(result);
-        console.log(blockNumber);
+        // console.log(blockNumber);
     }
 }
