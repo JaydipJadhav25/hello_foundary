@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
+
+contract Add1{
+
+    function add(uint a , uint b) pure external returns(uint){
+        return a+b;
+    }
+}
