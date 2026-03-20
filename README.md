@@ -211,3 +211,258 @@ forge snapshot
 * Anvil
 * Cast
 * Ethereum Local Node
+
+
+
+
+
+
+# 🧪 Smart Contract Testing Guide (Foundry)
+
+This document covers all major testing techniques used in Solidity smart contracts with Foundry, including unit testing, fuzz testing, invariant testing, differential testing, assertions, cheatcodes, and best practices.
+
+---
+
+## 🔢 Solidity Data Types (`uint`)
+
+`uint` (alias for `uint256`) is an unsigned integer type used to store non-negative values.
+
+### Key Points:
+
+* Range: `0` to `2^256 - 1`
+* Cannot store negative values
+* Default integer type in Solidity
+* Overflow/underflow protection in Solidity ≥ 0.8
+
+### Example:
+
+```solidity
+uint public totalSupply = 1000;
+
+function increment() public {
+    totalSupply += 1;
+}
+```
+
+---
+
+## 🧪 Unit Testing
+
+Unit testing verifies individual functions using predefined inputs.
+
+### Characteristics:
+
+* Functions are explicitly called
+* Full control over execution flow
+* Deterministic behavior
+
+### Example:
+
+```solidity
+function test_Increment() public {
+    counter.increment();
+    assertEq(counter.count(), 1);
+}
+```
+
+---
+
+## 🎲 Fuzz Testing
+
+Fuzz testing uses randomly generated inputs to test contract behavior.
+
+### Characteristics:
+
+* Random inputs provided by Foundry
+* Test runs multiple times
+* Helps discover edge cases
+
+### Example:
+
+```solidity
+function testFuzz_Add(uint256 x, uint256 y) public {
+    uint256 result = x + y;
+    assertEq(result, x + y);
+}
+```
+
+---
+
+## 🔁 Invariant Testing
+
+Invariant testing ensures that specific conditions always remain true regardless of function calls.
+
+### Characteristics:
+
+* Foundry calls functions randomly
+* Checks invariant after each sequence
+* Validates system-level rules
+
+### Example:
+
+```solidity
+function invariant_totalSupply_never_zero() public view {
+    assert(totalSupply > 0);
+}
+```
+
+### Setup:
+
+```solidity
+function setUp() public {
+    target = new Token();
+    targetContract(address(target));
+}
+```
+
+---
+
+## ⚖️ Differential Testing
+
+Differential testing compares two implementations of the same logic.
+
+### Characteristics:
+
+* Ensures both implementations behave identically
+* Useful for upgrades and optimizations
+
+### Example:
+
+```solidity
+function test_diff(uint256 x) public {
+    uint256 result1 = contractA.compute(x);
+    uint256 result2 = contractB.compute(x);
+
+    assertEq(result1, result2);
+}
+```
+
+---
+
+## 🧰 Assertions
+
+Assertions verify expected outcomes in tests.
+
+### Common Assertions:
+
+```solidity
+assertEq(a, b);
+assertTrue(condition);
+assertGt(a, b);
+assertLt(a, b);
+```
+
+---
+
+## 🧙 Cheatcodes (`vm`)
+
+Cheatcodes allow manipulation of blockchain state during testing.
+
+### Give ETH:
+
+```solidity
+vm.deal(address(user), 1 ether);
+```
+
+### Change Sender:
+
+```solidity
+vm.prank(user);
+```
+
+### Multiple Calls as Same Sender:
+
+```solidity
+vm.startPrank(user);
+vm.stopPrank();
+```
+
+### Change Time:
+
+```solidity
+vm.warp(block.timestamp + 1 days);
+```
+
+### Expect Revert:
+
+```solidity
+vm.expectRevert();
+contract.failFunction();
+```
+
+---
+
+## 🏗️ Test Setup
+
+Basic test contract structure:
+
+```solidity
+contract MyTest is Test {
+    MyContract public target;
+
+    function setUp() public {
+        target = new MyContract();
+    }
+}
+```
+
+---
+
+## 🔄 Handler Pattern (Invariant Testing)
+
+Used to control function calls during invariant testing.
+
+### Example:
+
+```solidity
+contract Handler {
+    MyContract target;
+
+    constructor(MyContract _target) {
+        target = _target;
+    }
+
+    function callDeposit(uint256 amount) public {
+        target.deposit(amount);
+    }
+}
+```
+
+---
+
+## ⚡ Foundry Commands
+
+```bash
+forge test
+forge test -vv
+forge test --match-test testName
+forge test --match-test invariant
+```
+
+---
+
+## 🚀 Best Practices
+
+* Test both success and failure cases
+* Use fuzz testing for edge cases
+* Use invariant testing for protocol safety
+* Use differential testing for upgrades
+* Prefer `vm.deal` over `.call` for funding
+* Keep tests isolated and deterministic
+* Add `receive()` when testing ETH transfers
+
+---
+
+## 🧠 Summary
+
+| Type                 | Purpose                  |
+| -------------------- | ------------------------ |
+| Unit Testing         | Test specific functions  |
+| Fuzz Testing         | Test with random inputs  |
+| Invariant Testing    | Ensure rules always hold |
+| Differential Testing | Compare implementations  |
+
+---
+
+⭐ Strong testing ensures secure, reliable, and production-ready smart contracts.
+
